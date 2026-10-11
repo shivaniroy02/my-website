@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shivani Roy | Studio Office</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1f2b27; --muted:#6a7a73; --card:rgba(251,250,245,.93);
+  --sage:#4f7c5f; --deep:#24413a; --teal:#86a9a8; --wood:#d9b98a; --line:rgba(31,43,39,.12);
+  --serif:'Fraunces',Georgia,'Times New Roman',serif; --sans:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#dbe8e6;font-family:var(--sans);color:var(--ink);-webkit-tap-highlight-color:transparent}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#c:active{cursor:grabbing}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
+.card{background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 34px rgba(40,64,54,.14)}
+
+#loader{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:#e9efe9;font-family:var(--serif);font-size:22px;color:var(--deep);transition:opacity .7s}
+#loader.off{opacity:0;pointer-events:none}
+
+#brand{position:fixed;left:18px;top:14px;z-index:5;display:flex;flex-direction:column;gap:1px;pointer-events:none}
+#brand b{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--deep)}
+#brand span{font-size:11.5px;color:var(--muted)}
+
+#side{position:fixed;left:16px;top:66px;width:262px;z-index:6;padding:18px 18px 10px;transition:opacity .4s,transform .4s}
+#side h1{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1.08;color:var(--deep)}
+#side p{font-size:12.5px;color:var(--muted);margin:8px 0 12px;line-height:1.45}
+#rooms{list-style:none;border-top:1px solid var(--line)}
+#rooms button{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:9px 6px;font-size:13.5px;border-bottom:1px solid var(--line);border-radius:6px;transition:background .2s}
+#rooms li:last-child button{border-bottom:0}
+#rooms button i{font-style:normal;font-size:10.5px;color:var(--muted);width:16px}
+#rooms button:hover,#rooms button.on{background:rgba(79,124,95,.12)}
+#rooms button.on{font-weight:600}
+body.hideui #side,body.hideui #bar{opacity:0;pointer-events:none;transform:translateY(8px)}
+
+#bar{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:2px;padding:6px;border-radius:999px;max-width:calc(100vw - 20px);transition:opacity .4s,transform .4s}
+#bar button{padding:9px 14px;border-radius:999px;font-size:12.5px;white-space:nowrap;transition:background .2s}
+#bar button:hover{background:rgba(79,124,95,.13)}
+#bar button.on{background:rgba(79,124,95,.18);font-weight:600}
+#bar .zoom{width:34px;padding:9px 0;text-align:center;font-size:16px;line-height:1}
+#bar .sep{width:1px;height:20px;background:var(--line);margin:0 6px;flex:none}
+#bar #tour{background:var(--deep);color:#f1f6f2;font-weight:500}
+#bar #tour:hover{background:#1a312c}
+#hint{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:10.5px;color:#5c6d66;z-index:4;pointer-events:none}
+
+#guide{position:fixed;left:50%;top:18px;transform:translate(-50%,-14px);z-index:7;padding:16px 30px 18px;text-align:center;min-width:250px;opacity:0;pointer-events:none;transition:opacity .45s,transform .45s}
+#guide.on{opacity:1;transform:translate(-50%,0)}
+#guide small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#guide h2{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.1;margin:5px 0 3px;color:var(--deep)}
+#guide p{font-size:12.5px;color:var(--muted)}
+
+#skip{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:7;padding:9px 18px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .4s}
+#skip.on{opacity:1;pointer-events:auto}
+
+.chip{position:fixed;left:0;top:0;z-index:4;transform:translate(-50%,-100%);padding:5px 11px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.09em;white-space:nowrap;pointer-events:none;background:var(--deep);color:#eef5f1;box-shadow:0 3px 10px rgba(0,0,0,.18);will-change:transform}
+.chip::after{content:'';position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:var(--deep)}
+.chip.light{background:#fbfaf5;color:var(--deep)}
+.chip.light::after{border-top-color:#fbfaf5}
+
+#dialog{position:fixed;z-index:8;width:340px;padding:20px 20px 16px;opacity:0;pointer-events:none;transition:opacity .35s}
+#dialog.on{opacity:1;pointer-events:auto}
+#dialog small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#dialog h2{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1.1;margin:4px 0 4px;color:var(--deep)}
+#dialog p{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+#dialog .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#dialog .grid button,#dialog .more button{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:13px;background:rgba(255,255,255,.6);text-align:left;transition:background .2s,border-color .2s}
+#dialog button:hover{background:#fff;border-color:rgba(79,124,95,.5)}
+#dialog .more{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+#dialog .more button{border:0;background:none;padding:7px 4px;font-size:12.5px;color:var(--deep);font-weight:600}
+#dialog .more button span{color:var(--muted);font-weight:400}
+
+#panel{position:fixed;right:18px;top:18px;bottom:34px;width:372px;z-index:9;padding:26px 26px 22px;overflow:auto;opacity:0;pointer-events:none;transform:translateX(24px);transition:opacity .45s,transform .45s}
+body.panel #panel{opacity:1;pointer-events:auto;transform:none}
+#panel .x{position:absolute;right:12px;top:12px;width:32px;height:32px;border-radius:50%;font-size:18px;line-height:1;color:var(--muted)}
+#panel .x:hover{background:rgba(31,43,39,.08)}
+#panel small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#panel h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.06;margin:6px 0 14px;color:var(--deep)}
+#panel p{font-size:14px;line-height:1.6;margin-bottom:12px;max-width:62ch}
+#panel p.big{font-family:var(--serif);font-size:19px;line-height:1.35;color:var(--deep)}
+#panel ul.list{list-style:none;margin:6px 0 14px}
+#panel ul.list li{padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+#panel ul.list li:last-child{border-bottom:1px solid var(--line)}
+#panel ul.list li span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+#panel ol.steps{list-style:none;counter-reset:s;margin:6px 0 14px}
+#panel ol.steps li{counter-increment:s;display:flex;gap:14px;padding:11px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.45}
+#panel ol.steps li::before{content:counter(s);font-family:var(--serif);font-size:20px;color:var(--sage);width:18px;flex:none}
+#panel .tags{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 16px}
+#panel .tags span{padding:6px 12px;border-radius:999px;background:rgba(79,124,95,.13);font-size:12.5px}
+#panel .btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+#panel .btn{display:block;text-align:center;padding:13px 16px;border-radius:12px;background:var(--deep);color:#f1f6f2;text-decoration:none;font-size:14px;font-weight:500}
+#panel .btn:hover{background:#1a312c}
+#panel .btn.alt{background:transparent;color:var(--deep);border:1px solid var(--line)}
+#panel a.lnk{color:var(--sage);font-weight:600;font-size:12.5px;text-decoration:none}
+
+@media (max-width:760px){
+  #brand{left:14px;top:12px}
+  #side{left:0;right:0;top:48px;width:auto;padding:6px 10px;border-radius:0;border-left:0;border-right:0;background:rgba(251,250,245,.8)}
+  #side h1,#side p{display:none}
+  #rooms{display:flex;overflow-x:auto;border:0;gap:4px;scrollbar-width:none}
+  #rooms::-webkit-scrollbar{display:none}
+  #rooms li{flex:none}
+  #rooms button{border:0;padding:8px 12px;border-radius:999px;font-size:12.5px;white-space:nowrap}
+  #rooms button i{display:none}
+  #guide{top:104px;padding:12px 22px 14px;min-width:220px}
+  #guide h2{font-size:24px}
+  #bar{left:8px;right:8px;transform:none;bottom:14px;overflow-x:auto;scrollbar-width:none}
+  #bar::-webkit-scrollbar{display:none}
+  #hint{display:none}
+  #skip{bottom:74px}
+  #dialog{left:10px!important;right:10px;top:auto!important;bottom:10px;width:auto}
+  #panel{left:10px;right:10px;top:auto;bottom:10px;width:auto;max-height:50vh;padding:20px 20px 18px;transform:translateY(24px)}
+  #panel h2{font-size:27px}
+  body.panel #bar,body.dlg #bar,body.panel #skip,body.dlg #skip{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important}}
+
+/* ===== AI + smart features ===== */
+body.night #brand b{color:#e9f2ee}
+body.night #brand span,body.night #hint{color:#9fb3ad}
+#panel button.btn{width:100%}
+#chat{position:fixed;left:16px;bottom:92px;width:348px;max-height:min(540px,calc(100vh - 160px));z-index:10;display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .3s,transform .3s}
+body.chat #chat{opacity:1;pointer-events:auto;transform:none}
+body.chat #side{opacity:0;pointer-events:none}
+.cHead{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}
+.cHead .dot{width:9px;height:9px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 4px rgba(79,124,95,.2)}
+.cHead b{font-family:var(--serif);font-weight:500;font-size:16px;color:var(--deep);flex:1}
+.cHead button{width:30px;height:30px;border-radius:50%;font-size:15px;color:var(--muted)}
+.cHead button:hover,.cHead button.on{background:rgba(79,124,95,.15)}
+#cMsgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:9px;min-height:140px}
+.m{max-width:88%;padding:9px 12px;border-radius:14px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.m.b{background:rgba(79,124,95,.12);align-self:flex-start;border-bottom-left-radius:4px}
+.m.u{background:var(--deep);color:#f1f6f2;align-self:flex-end;border-bottom-right-radius:4px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:96%}
+.acts button{padding:7px 12px;border-radius:999px;border:1px solid rgba(79,124,95,.45);font-size:12px;font-weight:600;color:var(--deep);background:rgba(255,255,255,.7)}
+.acts button:hover{background:#fff}
+.typing{display:flex;gap:4px;padding:12px 14px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}
+.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{opacity:.25;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+#cChips{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+#cChips::-webkit-scrollbar{display:none}
+#cChips button{flex:none;padding:6px 11px;border-radius:999px;background:rgba(31,43,39,.07);font-size:12px}
+#cChips button:hover{background:rgba(79,124,95,.18)}
+.cForm{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)}
+.cForm input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:10px 14px;font:inherit;font-size:13.5px;background:rgba(255,255,255,.75);color:var(--ink)}
+.cForm button{width:38px;height:38px;border-radius:50%;flex:none;background:var(--deep);color:#fff;font-size:15px}
+.cForm button#cMic{background:rgba(31,43,39,.08);color:var(--ink)}
+.cForm button#cMic.on{background:#b5655a;color:#fff}
+
+#qback{position:fixed;inset:0;z-index:11;background:rgba(20,32,28,.38);opacity:0;pointer-events:none;transition:opacity .3s}
+#quote{position:fixed;left:50%;top:50%;z-index:12;width:min(480px,94vw);max-height:90vh;overflow:auto;padding:24px 22px 20px;opacity:0;pointer-events:none;transform:translate(-50%,-46%);transition:opacity .3s,transform .3s}
+body.quote #qback{opacity:1;pointer-events:auto}
+body.quote #quote{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+#quote .x{position:absolute;right:12px;top:12px;width:32px;height:32px;border-radius:50%;font-size:18px;color:var(--muted)}
+#quote .x:hover{background:rgba(31,43,39,.08)}
+#quote small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#quote h2{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.1;margin:4px 0 4px;color:var(--deep)}
+#quote p.s{font-size:12.5px;color:var(--muted)}
+#quote h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;font-weight:600}
+.qrow{display:flex;flex-wrap:wrap;gap:7px}
+.qchip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);font-size:12.5px;background:rgba(255,255,255,.6)}
+.qchip.on{background:var(--deep);color:#f1f6f2;border-color:var(--deep)}
+.qadd{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px;cursor:pointer}
+.qadd input{accent-color:var(--sage);width:17px;height:17px}
+.qadd span{margin-left:auto;color:var(--muted);font-size:12px}
+.qstep{display:flex;align-items:center;gap:14px;font-size:15px}
+.qstep button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);font-size:18px;background:rgba(255,255,255,.6)}
+.qres{margin-top:16px;padding:16px;border-radius:14px;background:rgba(79,124,95,.12);text-align:center}
+.qres b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;color:var(--deep)}
+.qres span{font-size:12.5px;color:var(--muted)}
+#quote input.nm{width:100%;margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font:inherit;font-size:13.5px;background:rgba(255,255,255,.75);color:var(--ink)}
+#quote .btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+#quote .btn{display:block;text-align:center;padding:13px 16px;border-radius:12px;background:var(--deep);color:#f1f6f2;text-decoration:none;font-size:14px;font-weight:500}
+#quote .btn:hover{background:#1a312c}
+#quote .btn.alt{background:transparent;color:var(--deep);border:1px solid var(--line)}
+#quote .fine{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}
+@media (max-width:760px){
+  #chat{left:10px;right:10px;bottom:10px;width:auto;max-height:64vh}
+  body.chat #bar{display:none}
+}
+#gdlg{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:8;width:340px;padding:20px 20px 14px;opacity:0;pointer-events:none;transition:opacity .35s}
+#gdlg.on{opacity:1;pointer-events:auto}
+#gdlg small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#gdlg h2{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.1;margin:4px 0 4px;color:var(--deep)}
+#gdlg p{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+#gdlg .more{display:flex;flex-direction:column;gap:7px}
+#gdlg .more button{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:13px;background:rgba(255,255,255,.6);text-align:left;transition:background .2s,border-color .2s}
+#gdlg .more button:hover{background:#fff;border-color:rgba(79,124,95,.5)}
+@media (max-width:760px){#gdlg{left:10px;right:10px;bottom:10px;width:auto;transform:none}}
+
+/* ===== Always-visible contact dock ===== */
+#dock{position:fixed;right:16px;bottom:34px;z-index:6;display:flex;flex-direction:column;gap:8px;transition:opacity .4s,transform .4s}
+#dock a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--deep);color:#f1f6f2;box-shadow:0 6px 18px rgba(36,65,58,.28);transition:transform .2s,background .2s;text-decoration:none}
+#dock a:hover{transform:scale(1.08);background:#1a312c}
+#dock a.wa{background:#2f7d57}
+#dock a.wa:hover{background:#26694a}
+#dock svg{width:21px;height:21px;fill:currentColor}
+body.hideui #dock,body.panel #dock,body.dlg #dock{opacity:0;pointer-events:none;transform:translateY(8px)}
+@media (max-width:760px){#dock{right:12px;bottom:76px}#dock a{width:40px;height:40px}}
+</style>
+</head>
+<body class="hideui">
+<canvas id="c" aria-label="Interactive 3D office. Use the room list to visit each room."></canvas>
+<div id="loader">Opening the office…</div>
+
+<header id="brand"><b>Shivani Roy</b><span>Web and UI/UX designer</span></header>
+
+<aside id="side" class="card">
+  <h1>Explore the office.</h1>
+  <p>Select a room to look around, or take a tour.</p>
+  <ol id="rooms"></ol>
+</aside>
+
+<div id="guide" class="card" role="status"><small id="gk"></small><h2 id="gt"></h2><p id="gs"></p></div>
+<button id="skip" class="card"></button>
+
+<div class="chip" id="lYou">YOU</div>
+<div class="chip light" id="lRec">RECEPTIONIST</div>
+<div class="chip light" id="lBoss">SHIVANI</div>
+
+<div id="dialog" class="card" role="dialog" aria-label="Receptionist">
+  <small>Receptionist</small>
+  <h2>How can I help you?</h2>
+  <p>Welcome in. Make yourself at home.</p>
+  <div class="grid">
+    <button data-go="work">Work Studio <span>↗</span></button>
+    <button data-go="design">Design Room <span>↗</span></button>
+    <button data-go="meeting">Meeting Room <span>↗</span></button>
+    <button data-go="ops">Operations <span>↗</span></button>
+  </div>
+  <div class="more">
+    <button data-go="ai">Ask the AI assistant <span>✦</span></button>
+    <button data-go="boss">Meet the boss <span>Knock first ↗</span></button>
+    <button data-go="explore">Just exploring <span>↗</span></button>
+  </div>
+</div>
+
+<aside id="panel" class="card" aria-live="polite">
+  <button class="x" id="pClose" aria-label="Close">×</button>
+  <small id="pk"></small>
+  <h2 id="pt"></h2>
+  <div id="pb"></div>
+</aside>
+
+<nav id="bar" class="card" aria-label="View controls">
+  <button class="zoom" id="zOut" aria-label="Zoom out">−</button>
+  <button class="zoom" id="zIn" aria-label="Zoom in">+</button>
+  <span class="sep"></span>
+  <button id="bMove">Move view</button>
+  <button id="bFoot">Football ground</button>
+  <button id="bFull">Full view</button>
+  <button id="bHood">Neighbourhood</button>
+  <button id="bAI">✦ Ask AI</button>
+  <button id="bNight">Night</button>
+  <button id="tour">Take a tour</button>
+</nav>
+<section id="chat" class="card" aria-label="AI assistant">
+  <div class="cHead"><span class="dot"></span><b>Ask Shivani's AI</b><button id="cVoice" aria-label="Read replies aloud" title="Read replies aloud">🔊</button><button id="cClose" aria-label="Close chat">×</button></div>
+  <div id="cMsgs" aria-live="polite"></div>
+  <div id="cChips"></div>
+  <div class="cForm"><input id="cIn" type="text" placeholder="Ask anything / Kuch bhi pucho" autocomplete="off"><button id="cSend" type="button" aria-label="Send">➤</button></div>
+</section>
+
+<div id="qback"></div>
+<section id="quote" class="card" role="dialog" aria-label="Instant quote">
+  <button class="x" id="qClose" aria-label="Close">×</button>
+  <small>Smart estimator</small>
+  <h2>Instant quote</h2>
+  <p class="s">Pick what you need and get an estimate in seconds.</p>
+  <div id="qBody"></div>
+</section>
+
+<div id="gdlg" class="card" role="dialog" aria-label="Security guard">
+  <small>Security</small>
+  <h2>Stop! Who goes there?</h2>
+  <p>Tell me why you're visiting and I'll open the gate.</p>
+  <div class="more">
+    <button data-w="client">I need a website <span>↗</span></button>
+    <button data-w="hire">I'm hiring <span>↗</span></button>
+    <button data-w="look">Just looking around <span>↗</span></button>
+  </div>
+</div>
+<div class="chip light" id="lGuard">GUARD</div>
+<nav id="dock" aria-label="Contact Shivani">
+  <a id="dkLi" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.5H3V9.75zm6.5 0h3.83v1.57h.06c.53-1 1.84-2.07 3.78-2.07 4.04 0 4.78 2.66 4.78 6.12v5.88h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75v5.29h-4V9.75z"/></svg></a>
+  <a id="dkWa" class="wa" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12.04 2a9.9 9.9 0 0 0-8.4 15.1L2 22l5-1.6A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.3 15l-.3-.2-3 .9.9-2.9-.2-.3a8.1 8.1 0 0 1 6.9-12.5zM8.6 7.5c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 2.4.9 2.9.7 3.4.7.5-.1 1.7-.7 1.9-1.400.2-.7.2-1.200.2-1.400l-.5-.3-1.800-.9c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.9-.4-1.800-.9-2.600-1.800a9 9 0 0 1-1.200-1.600c-.1-.2 0-.4.100-.5l.4-.5.3-.4c.1-.2.100-.3 0-.5l-.8-2c-.2-.5-.4-.5-.6-.5z"/></svg></a>
+  <a id="dkMail" aria-label="Email" title="Email"><svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1.6 2L12 12.4 19.400 7H4.600zM4 8.900V17h16V8.900l-8 5.800-8-5.800z"/></svg></a>
+</nav>
+<div id="hint">Drag to rotate · Right-drag or Move view to pan · Scroll or pinch to zoom</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============================================================
+   EDIT YOUR DETAILS HERE
+   ============================================================ */
+const CONFIG = {
+  name: 'Shivani Roy',
+  tagline: 'UI/UX & web designer building sites that convert.',
+  linkedin: 'https://www.linkedin.com/in/shivani-roy-6463b8430',
+  whatsapp: '919720515276',   // country code + number, no + or spaces
+  email: 'royshivani183@gmail.com',
+  projects: [
+    { name: 'Restaurant website', note: 'Live sample site', url: 'https://peaceful-raindrop-535b4b.netlify.app/' },
+    { name: 'Café website',       note: 'Live sample site', url: '' },
+    { name: 'Academy website',    note: 'Live sample site', url: 'https://cute-palmier-97f9cd.netlify.app/' }
+  ],
+  /* ---- AI assistant ----
+     Works out of the box with built-in answers (no key needed).
+     To make it a real AI (Claude), deploy netlify/functions/ai-chat.js and set:
+     endpoint: '/.netlify/functions/ai-chat'                                   */
+  ai: { endpoint: '' },
+  /* ---- Instant quote: CHANGE THESE to your real prices (in rupees) ---- */
+  pricing: {
+    currency: '₹', rushPct: 25, spread: 0.15,
+    extraPage: { cost: 1000, days: 1 },
+    types: [
+      { id: 'landing',   label: 'Landing page',          base: 4000,  days: 4 },
+      { id: 'business',  label: 'Business website',      base: 8000,  days: 8 },
+      { id: 'food',      label: 'Restaurant / Café site', base: 7000,  days: 7 },
+      { id: 'portfolio', label: 'Portfolio',             base: 5000,  days: 5 },
+      { id: 'store',     label: 'Online store design',   base: 15000, days: 15 }
+    ],
+    addons: [
+      { id: 'figma',  label: 'Full Figma design file',          cost: 2000, days: 2 },
+      { id: 'motion', label: 'Animations & interactions',       cost: 1500, days: 2 },
+      { id: 'form',   label: 'Contact form + WhatsApp button',  cost: 500,  days: 1 },
+      { id: 'seo',    label: 'Basic SEO setup',                 cost: 1000, days: 1 },
+      { id: 'bot',    label: 'AI chatbot on your site',         cost: 3000, days: 3 }
+    ]
+  }
+};
+
+/* ---------- room content shown in the side panel ---------- */
+const link = (u, t) => u ? `<a class="lnk" href="${u}" target="_blank" rel="noopener">${t}</a>` : '';
+const CONTENT = {
+  reception: {
+    kicker: 'Welcome',
+    title: `Hi, I'm ${CONFIG.name.split(' ')[0]}.`,
+    body: () => `<p class="big">${CONFIG.tagline}</p>
+      <p>This office is my portfolio. Walk through the rooms to see my work, my tools, how I work, and how to reach me.</p>`
+  },
+  work: {
+    kicker: 'Work Studio',
+    title: 'Projects',
+    body: () => `<p>Websites I designed and built with HTML, CSS and JavaScript. Four to five projects completed so far.</p>
+      <ul class="list">${CONFIG.projects.map(p => `<li>${p.name}<span>${p.note} ${link(p.url, 'Open site')}</span></li>`).join('')}</ul>`
+  },
+  design: {
+    kicker: 'Design Room',
+    title: 'Design comes first',
+    body: () => `<p>Every site starts in Figma. I work out the layout, spacing and flow before writing any code, so the build goes fast and nothing gets guessed.</p>
+      <div class="tags"><span>Figma</span><span>UI/UX design</span><span>Responsive layouts</span></div>`
+  },
+  meeting: {
+    kicker: 'Meeting Room',
+    title: 'How we would work together',
+    body: () => `<ol class="steps">
+        <li>We talk about your goals and what visitors should do on your site.</li>
+        <li>I design the pages in Figma and share them with you.</li>
+        <li>I build the site with HTML, CSS and JavaScript.</li>
+        <li>We test it on phone and desktop, then launch.</li></ol>
+      <div class="btns"><button class="btn" data-act="quote">Get an instant quote</button></div>`
+  },
+  ops: {
+    kicker: 'Operations',
+    title: 'Skills and tools',
+    body: () => `<div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Figma</span><span>UI/UX design</span></div>
+      <p>Beyond websites, I have also worked on AI, app and game projects, which is why I like adding interaction and motion to a page.</p>`
+  },
+  lounge: {
+    kicker: 'The Lounge',
+    title: 'About me',
+    body: () => `<p>I have been designing and building websites since 2024. I like turning plain pages into experiences that feel alive.</p>
+      <p>I work remotely and I am open to part-time roles as well as freelance projects.</p>`
+  },
+  boss: {
+    kicker: 'Boss Cabin',
+    title: 'Let’s work together',
+    body: () => `<p>Looking for a website, or a remote part-time designer for your team? Send me a message.</p>
+      <div class="btns">
+        <a class="btn" href="${CONFIG.linkedin}" target="_blank" rel="noopener">Message me on LinkedIn</a>
+        ${CONFIG.whatsapp ? `<a class="btn alt" href="https://wa.me/${CONFIG.whatsapp}" target="_blank" rel="noopener">Chat on WhatsApp</a>` : ''}
+        ${CONFIG.email ? `<a class="btn alt" href="mailto:${CONFIG.email}">Send an email</a>` : ''}
+      </div>`
+  }
+};
+
+/* ============================================================
+   ROOMS, WALKING GRAPH, CAMERA VIEWS
+   ============================================================ */
+const ROOMS = [
+  { key: 'reception', label: 'Reception',    node: 'front',   view: [0, 6.5, 15],  greet: 'Welcome in.' },
+  { key: 'work',      label: 'Work Studio',  node: 'work',    view: [-8.5, 1, 18], greet: 'Please step inside.' },
+  { key: 'design',    label: 'Design Room',  node: 'design',  view: [8.5, 1, 18],  greet: 'Please step inside.' },
+  { key: 'meeting',   label: 'Meeting Room', node: 'meeting', view: [-8.5, -6.5, 15], greet: 'Please take a seat.' },
+  { key: 'ops',       label: 'Operations',   node: 'ops',     view: [0, -1.5, 16], greet: 'Please step inside.' },
+  { key: 'lounge',    label: 'The Lounge',   node: 'lounge',  view: [8.5, -6.5, 15], greet: 'Make yourself comfortable.' },
+  { key: 'boss',      label: 'Boss Cabin',   node: 'boss',    view: [0, -7, 12],   greet: 'Please step inside.' }
+];
+const NODES = {
+  street: [0, 19.2], gate: [0, 17.8], front: [0, 8.9], rR: [3.8, 8.9], rL: [-3.8, 8.9],
+  c: [0, 3.6], aR: [3.8, 3.6], aL: [-3.8, 3.6],
+  work: [-8.5, 3.7], design: [8.5, 3.7], ops: [0, 0.6], bossDoor: [0, -4.4], boss: [0, -6.3],
+  aL2: [-3.8, -3.3], aR2: [3.8, -3.3], mDoor: [-8.5, -3.3], meeting: [-8.5, -5.8], lDoor: [8.5, -3.3], lounge: [8.5, -5.8]
+};
+const EDGES = [['street','gate'],['gate','front'],['front','rR'],['front','rL'],['rR','aR'],['rL','aL'],['aR','c'],['aL','c'],['c','ops'],['ops','bossDoor'],['bossDoor','boss'],
+  ['aL','work'],['aR','design'],['aL','aL2'],['aR','aR2'],['aL2','mDoor'],['mDoor','meeting'],['aR2','lDoor'],['lDoor','lounge']];
+const ADJ = {};
+EDGES.forEach(([a, b]) => { (ADJ[a] = ADJ[a] || []).push(b); (ADJ[b] = ADJ[b] || []).push(a); });
+
+function route(a, b) {
+  const dist = {}, prev = {}, Q = new Set(Object.keys(NODES));
+  Q.forEach(k => dist[k] = Infinity); dist[a] = 0;
+  while (Q.size) {
+    let u = null; Q.forEach(k => { if (u === null || dist[k] < dist[u]) u = k; });
+    Q.delete(u); if (u === b) break;
+    (ADJ[u] || []).forEach(v => {
+      const d = dist[u] + Math.hypot(NODES[u][0] - NODES[v][0], NODES[u][1] - NODES[v][1]);
+      if (d < dist[v]) { dist[v] = d; prev[v] = u; }
+    });
+  }
+  const out = []; let c = b; while (c) { out.unshift(c); c = prev[c]; } return out;
+}
+
+/* ============================================================
+   THREE.JS SETUP
+   ============================================================ */
+const canvas = document.getElementById('c');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdbe8e6);
+scene.fog = new THREE.Fog(0xdbe8e6, 130, 330);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 700);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0xcdd8d0, 0.68));
+const sun = new THREE.DirectionalLight(0xffffff, 0.42);
+sun.position.set(-26, 46, 30);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -58, right: 58, top: 58, bottom: -58, near: 1, far: 150 });
+sun.shadow.bias = -0.0006;
+scene.add(sun);
+
+const mc = {};
+const mat = (c, o) => { const k = c + (o ? JSON.stringify(o) : ''); return mc[k] || (mc[k] = new THREE.MeshLambertMaterial(Object.assign({ color: c }, o || {}))); };
+let cur = scene;
+function put(m, p, shadow) { m.castShadow = shadow !== false; m.receiveShadow = true; (p || cur).add(m); return m; }
+function box(w, h, d, c, x, y, z, p, o) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c, o)); m.position.set(x, y, z); return put(m, p, !(o && o.transparent)); }
+function cyl(rt, rb, h, c, x, y, z, p, seg) { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 14), mat(c)); m.position.set(x, y, z); return put(m, p); }
+function sph(r, c, x, y, z, p, sx, sy, sz) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), mat(c)); m.position.set(x, y, z); m.scale.set(sx || 1, sy || 1, sz || 1); return put(m, p); }
+function plane(w, d, c, x, y, z) { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat(c)); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z); m.receiveShadow = true; cur.add(m); return m; }
+
+function railing(x1, z1, x2, z2, h, col) {
+  h = h || 1.2; col = col || 0x2b3532;
+  const dx = x2 - x1, dz = z2 - z1, L = Math.hypot(dx, dz);
+  const g = new THREE.Group(); g.position.set((x1 + x2) / 2, 0, (z1 + z2) / 2); g.rotation.y = Math.atan2(-dz, dx);
+  box(L, 0.05, 0.05, col, 0, h, 0, g); box(L, 0.04, 0.04, col, 0, h * 0.5, 0, g);
+  const n = Math.max(1, Math.ceil(L / 0.9));
+  for (let i = 0; i <= n; i++) box(0.05, h, 0.05, col, -L / 2 + i * L / n, h / 2, 0, g);
+  cur.add(g);
+}
+function signTex(txt, w, h, bg, fg) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = Math.max(64, Math.round(512 * h / w));
+  const x = c.getContext('2d'); x.fillStyle = bg || '#8fb0ae'; x.fillRect(0, 0, c.width, c.height);
+  let fs = Math.round(c.height * 0.46); x.font = '700 ' + fs + 'px Inter, Arial, sans-serif';
+  while (x.measureText(txt).width > c.width * 0.88 && fs > 10) { fs -= 2; x.font = '700 ' + fs + 'px Inter, Arial, sans-serif'; }
+  x.fillStyle = fg || '#f4f8f6'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, c.width / 2, c.height / 2 + 2);
+  const t = new THREE.CanvasTexture(c); t.anisotropy = 4; return t;
+}
+function sign(txt, w, h, x, y, z, ry, p) {
+  const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = ry || 0;
+  box(w + 0.16, h + 0.16, 0.08, 0xd2ad78, 0, 0, 0, g);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: signTex(txt, w, h) }));
+  m.position.z = 0.05; g.add(m); (p || cur).add(g); return g;
+}
+
+/* ---------- people ---------- */
+const SHIRTS = [0x2a2f3a, 0x3b4a5a, 0x6b8f71, 0xb5655a, 0x4a5a7a, 0xd0a15a, 0x7a6a9a];
+const SKINS = [0xe0b08c, 0xc98f68, 0xa8714d, 0xf0c8a5];
+const HAIRS = [0x1b1512, 0x2b1d14, 0x4a3326, 0x0f0f10];
+let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+const pick = a => a[Math.floor(rnd() * a.length)];
+
+function person(o) {
+  o = o || {};
+  const g = new THREE.Group();
+  const skin = o.skin || 0xe0b08c, shirt = o.shirt || 0x6f9ed1, pants = o.pants || 0x233a63, hair = o.hair || 0x1b1512;
+  const legs = [], arms = [];
+  for (const sx of [-1, 1]) {
+    if (o.seated) {
+      const th = cyl(0.095, 0.09, 0.45, pants, sx * 0.12, 0.85, 0.22, g); th.rotation.x = Math.PI / 2;
+      cyl(0.085, 0.075, 0.46, pants, sx * 0.12, 0.62, 0.45, g);
+      box(0.16, 0.08, 0.26, 0x4a3226, sx * 0.12, 0.37, 0.52, g);
+    } else {
+      const lg = new THREE.Group(); lg.position.set(sx * 0.12, 0.85, 0); g.add(lg);
+      cyl(0.095, 0.085, 0.8, pants, 0, -0.4, 0, lg);
+      box(0.16, 0.09, 0.28, 0x4a3226, 0, -0.82, 0.05, lg);
+      legs.push(lg);
+    }
+    const ag = new THREE.Group(); ag.position.set(sx * 0.33, 1.48, 0); g.add(ag);
+    cyl(0.07, 0.06, 0.6, o.suit || shirt, 0, -0.28, 0, ag);
+    sph(0.065, skin, 0, -0.6, 0, ag);
+    if (o.seated) ag.rotation.x = -1.15;
+    arms.push(ag);
+  }
+  box(0.52, 0.66, 0.28, o.suit || shirt, 0, 1.2, 0, g);
+  if (o.suit) box(0.14, 0.5, 0.02, 0xf4f4f4, 0, 1.3, 0.15, g);
+  sph(0.17, skin, 0, 1.74, 0, g);
+  sph(0.185, hair, 0, 1.78, -0.03, g, 1, 0.95, 1);
+  if (o.female) { box(0.34, 0.5, 0.1, hair, 0, 1.55, -0.14, g); sph(0.09, hair, 0, 1.96, -0.1, g); }
+  g.scale.setScalar(o.scale || 0.92);
+  g.userData.legs = legs; g.userData.arms = arms; g.userData.seated = !!o.seated;
+  return g;
+}
+function walkAnim(g, t, amp) {
+  const u = g.userData; if (u.seated) return;
+  u.legs[0].rotation.x = Math.sin(t) * amp; u.legs[1].rotation.x = -Math.sin(t) * amp;
+  u.arms[0].rotation.x = -Math.sin(t) * amp * 0.8; u.arms[1].rotation.x = Math.sin(t) * amp * 0.8;
+}
+
+/* ---------- furniture ---------- */
+function chair(x, z, ry, col) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry || 0;
+  box(0.55, 0.08, 0.55, col, 0, 0.48, 0, g); box(0.55, 0.6, 0.08, col, 0, 0.82, -0.26, g);
+  cyl(0.04, 0.04, 0.45, 0x333b38, 0, 0.25, 0, g); cyl(0.3, 0.3, 0.05, 0x333b38, 0, 0.04, 0, g, 8);
+  cur.add(g);
+}
+function desk(x, z, withMonitor) {
+  box(2.2, 0.08, 1.0, 0xe3c79a, x, 0.76, z);
+  box(0.08, 0.72, 0.9, 0x2b3330, x - 0.95, 0.36, z); box(0.08, 0.72, 0.9, 0x2b3330, x + 0.95, 0.36, z);
+  if (withMonitor) { box(0.78, 0.46, 0.04, 0x1d2428, x, 1.1, z - 0.2); box(0.08, 0.2, 0.08, 0x2b3330, x, 0.9, z - 0.2); }
+  else { box(0.62, 0.03, 0.42, 0x3a4247, x, 0.82, z - 0.05); const s = box(0.62, 0.4, 0.03, 0x20272b, x, 1.0, z - 0.26); s.rotation.x = -0.25; }
+}
+function seatAt(x, z, facing, o) {
+  chair(x, z, facing, o && o.chairCol || 0x5f8f6f);
+  const p = person(Object.assign({ seated: true, shirt: pick(SHIRTS), skin: pick(SKINS), hair: pick(HAIRS), pants: 0x1f2428 }, o || {}));
+  p.position.set(x, -0.28, z); p.rotation.y = facing; cur.add(p); return p;
+}
+function plant(x, z, s) {
+  s = s || 1;
+  cyl(0.26 * s, 0.2 * s, 0.4 * s, 0x8a918c, x, 0.2 * s, z);
+  for (let i = 0; i < 7; i++) {
+    const a = i / 7 * Math.PI * 2, c = i % 2 ? 0x3f7a4c : 0x4f9a5e;
+    const l = sph(0.13 * s, c, x + Math.cos(a) * 0.17 * s, (0.75 + (i % 3) * 0.12) * s, z + Math.sin(a) * 0.17 * s, null, 0.7, 2.6, 0.7);
+    l.rotation.z = Math.cos(a) * 0.35; l.rotation.x = Math.sin(a) * 0.35;
+  }
+}
+function sofa(x, z, ry, w) {
+  w = w || 2.6;
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry || 0;
+  box(w, 0.4, 0.95, 0x4f7c5f, 0, 0.3, 0, g); box(w, 0.55, 0.25, 0x44705a, 0, 0.7, -0.4, g);
+  box(0.22, 0.55, 0.95, 0x44705a, -w / 2 + 0.11, 0.55, 0, g); box(0.22, 0.55, 0.95, 0x44705a, w / 2 - 0.11, 0.55, 0, g);
+  cur.add(g);
+}
+function roundTable(x, z, r) { cyl(r, r, 0.07, 0xe3c79a, x, 0.5, z, null, 24); cyl(0.07, 0.07, 0.5, 0x2b3330, x, 0.25, z); }
+
+function facadeTex(base, win) {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  x.fillStyle = base; x.fillRect(0, 0, 64, 64); x.fillStyle = win; x.fillRect(11, 13, 42, 36);
+  x.fillStyle = 'rgba(255,255,255,.25)'; x.fillRect(11, 13, 42, 4);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4; return t;
+}
+function building(x, z, w, d, h, o) {
+  o = o || {};
+  const tx = facadeTex(o.base || '#ebe8dc', o.win || '#5f8f9a'), a = tx.clone(), b = tx.clone();
+  a.needsUpdate = b.needsUpdate = true;
+  a.repeat.set(Math.max(1, Math.round(d / 3.2)), Math.max(1, Math.round(h / 3.2)));
+  b.repeat.set(Math.max(1, Math.round(w / 3.2)), Math.max(1, Math.round(h / 3.2)));
+  const mx = new THREE.MeshLambertMaterial({ map: a }), mz = new THREE.MeshLambertMaterial({ map: b }), mr = mat(o.roof || 0x3f6b4f);
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), [mx, mx, mr, mr, mz, mz]);
+  m.position.set(x, h / 2, z); put(m, scene);
+  box(w * 0.5, 0.7, d * 0.45, o.roof || 0x3f6b4f, x + w * 0.1, h + 0.35, z, scene);
+}
+function tree(x, z, s) {
+  s = s || 1; cyl(0.14 * s, 0.18 * s, 1.4 * s, 0x7a5a3e, x, 0.7 * s, z, scene, 8);
+  sph(1.0 * s, 0x5a9a62, x, 2.0 * s, z, scene); sph(0.75 * s, 0x6aa96f, x + 0.35 * s, 2.6 * s, z - 0.2 * s, scene);
+}
+function palm(x, z) {
+  const t = cyl(0.1, 0.16, 3.4, 0x8a6a4a, x, 1.7, z, scene, 8); t.rotation.z = 0.08;
+  for (let i = 0; i < 6; i++) {
+    const l = box(0.28, 0.05, 1.7, 0x3f8a4f, x + Math.sin(i) * 0.1, 3.45, z + Math.cos(i) * 0.1, scene);
+    l.geometry.translate(0, 0, 0.85); l.rotation.y = i / 6 * Math.PI * 2; l.rotation.x = 0.35;
+  }
+}
+
+/* ============================================================
+   BUILD THE WORLD
+   ============================================================ */
+const walkers = [], cars = [];
+let recepP, bossP, guardP;
+const worldGroup = new THREE.Group(); scene.add(worldGroup);
+const office = new THREE.Group(); office.position.y = 0.3; scene.add(office);
+
+function buildOutside() {
+  cur = scene;
+  plane(520, 520, 0xe8ece3, 0, 0, 0);                         // ground
+  plane(32, 28.5, 0xcfe3c6, 0, 0.012, 1.75);                  // lawn
+  plane(5, 9, 0xe9e2d1, 0, 0.02, 15.2);                       // entrance path
+  // roads
+  const road = 0x959ca0;
+  plane(5, 44, road, -21.5, 0.03, 2); plane(5, 44, road, 21.5, 0.03, 2);
+  plane(48, 5, road, 0, 0.03, 21.5); plane(48, 5, road, 0, 0.03, -17.5);
+  // dashed centre lines + zebra
+  for (let i = -22; i <= 22; i += 3) { plane(1.4, 0.15, 0xf2f2ee, i, 0.04, 21.5); plane(1.4, 0.15, 0xf2f2ee, i, 0.04, -17.5); }
+  for (let i = -18; i <= 20; i += 3) { plane(0.15, 1.4, 0xf2f2ee, -21.5, 0.04, i); plane(0.15, 1.4, 0xf2f2ee, 21.5, 0.04, i); }
+  for (let i = -3; i <= 3; i++) plane(0.55, 4.6, 0xf6f6f2, i * 0.95, 0.045, 21.5);
+  // sea + beach
+  plane(520, 40, 0xefe3c2, 0, 0.01, -58); plane(520, 90, 0x62aec6, 0, 0.02, -122);
+  cyl(1.8, 2.4, 9, 0xf4f4f0, 62, 4.5, -56, scene); cyl(1.9, 1.9, 1.5, 0xcc4b44, 62, 6.5, -56, scene); cyl(1.2, 1.9, 1.2, 0xcc4b44, 62, 9.6, -56, scene);
+  box(3, 0.3, 26, 0xb98e5f, -26, 0.25, -64, scene);
+  // fence + gate
+  railing(-16, -12.5, 16, -12.5, 1.1); railing(-16, -12.5, -16, 16, 1.1); railing(16, -12.5, 16, 16, 1.1);
+  railing(-16, 16, -3, 16, 1.1); railing(3, 16, 16, 16, 1.1);
+  box(0.7, 2.2, 0.7, 0xf2efe4, -3.2, 1.1, 16, scene); box(0.7, 2.2, 0.7, 0xf2efe4, 3.2, 1.1, 16, scene);
+  // security booth + signboard
+  box(2.4, 2.3, 2.0, 0xf3f1e8, -6.2, 1.15, 13.4, scene); box(3.2, 0.2, 2.8, 0x3f6b4f, -6.2, 2.4, 13.4, scene);
+  sign('SECURITY', 1.6, 0.42, -6.2, 1.7, 14.45, 0, scene);
+  guardP = person({ suit: 0x1c2024, pants: 0x1c2024, scale: 0.92 }); guardP.position.set(-4.4, 0, 13.6); guardP.rotation.y = 0.6; scene.add(guardP);
+  const sb = sign('SHIVANI ROY STUDIO', 4.2, 0.9, 7.2, 1.6, 14.2, 0, scene);
+  cyl(0.06, 0.06, 1.2, 0x2b3330, 5.4, 0.6, 14.2, scene, 6); cyl(0.06, 0.06, 1.2, 0x2b3330, 9.0, 0.6, 14.2, scene, 6);
+  // plants along path
+  for (const z of [11.5, 14, 16.7]) { for (const x of [-3, 3]) sph(0.5, 0x5a9a62, x, 0.45, z, scene); }
+  // neighbourhood
+  const glass = { base: '#8fb6b8', win: '#2f6f86', roof: 0x2e6a80 };
+  building(-36, -29, 13, 10, 9, {});
+  building(-14, -30, 12, 9, 7, { roof: 0x3f6b4f });
+  building(6, -31, 10, 9, 12, glass);
+  building(24, -31, 12, 9, 8, {});
+  building(36, -12, 11, 11, 12, glass);
+  building(36, 8, 11, 12, 7, {});
+  building(-14, 35, 14, 10, 10, {});
+  building(6, 37, 10, 10, 15, glass);
+  building(26, 35, 12, 10, 7, {});
+  building(-37, 28, 10, 9, 8, glass);
+  building(-37, -4, 0.1, 0.1, 0.1, {});
+  // football ground
+  const fx = -37, fz = 2;
+  plane(20, 30, 0x7fbf86, fx, 0.05, fz);
+  const L = (w, d, x, z) => plane(w, d, 0xffffff, fx + x, 0.06, fz + z);
+  L(18, 0.15, 0, -14); L(18, 0.15, 0, 14); L(0.15, 28, -9, 0); L(0.15, 28, 9, 0); L(18, 0.15, 0, 0);
+  L(8, 0.15, 0, -9); L(8, 0.15, 0, 9); L(0.15, 5, -4, -11.5); L(0.15, 5, 4, -11.5); L(0.15, 5, -4, 11.5); L(0.15, 5, 4, 11.5);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(2.4, 2.55, 40), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  ring.rotation.x = -Math.PI / 2; ring.position.set(fx, 0.07, fz); scene.add(ring);
+  for (const zz of [-14, 14]) { box(0.1, 1.6, 0.1, 0xffffff, fx - 1.8, 0.8, fz + zz, scene); box(0.1, 1.6, 0.1, 0xffffff, fx + 1.8, 0.8, fz + zz, scene); box(3.7, 0.1, 0.1, 0xffffff, fx, 1.6, fz + zz, scene); }
+  const kit = [0xc2453d, 0x3d6ac2];
+  for (let i = 0; i < 8; i++) {
+    const p = person({ shirt: kit[i % 2], pants: 0xf2f2f2, skin: pick(SKINS), hair: pick(HAIRS), scale: 0.8 });
+    const a = [fx - 7 + rnd() * 14, fz - 11 + rnd() * 22], b = [fx - 7 + rnd() * 14, fz - 11 + rnd() * 22];
+    p.position.set(a[0], 0.05, a[1]); scene.add(p);
+    walkers.push({ g: p, a, b, f: 0, speed: 2.2 + rnd() * 1.3, t: rnd() * 6, y: 0.05 });
+  }
+  // trees and palms
+  for (let i = -16; i <= 18; i += 6) { tree(-17.6, i, 0.55); tree(17.6, i, 0.55); }
+  for (const p of [[-27, -20], [-24, 30], [27, 28], [30, -22], [-30, 18], [22, 29], [-8, 28]]) palm(p[0], p[1]);
+  for (const p of [[-44, 28], [-30, 36], [14, 28], [30, 22]]) tree(p[0], p[1], 1.1);
+  // cars (loop around the office)
+  const colors = [0xc23b3b, 0x2c3a5a, 0xe8e6de, 0x3b3f44, 0x6b8f71];
+  colors.forEach((c, i) => {
+    const g = new THREE.Group();
+    box(0.95, 0.5, 2.1, c, 0, 0.5, 0, g); box(0.85, 0.42, 1.1, 0xcfe0e6, 0, 0.95, -0.1, g);
+    for (const [wx, wz] of [[-0.5, 0.7], [0.5, 0.7], [-0.5, -0.7], [0.5, -0.7]]) { const w = cyl(0.25, 0.25, 0.2, 0x1b1f22, wx, 0.25, wz, g, 10); w.rotation.z = Math.PI / 2; }
+    scene.add(g); cars.push({ g, s: i * 38, speed: 5 + (i % 3) * 1.2 });
+  });
+  // pedestrians on pavement
+  const routes = [[[-18, -13], [-18, 17]], [[18, 17], [18, -13]], [[-17, 18], [17, 18]], [[17, -14], [-17, -14]]];
+  routes.forEach(r => {
+    const p = person({ shirt: pick(SHIRTS), skin: pick(SKINS), hair: pick(HAIRS), female: rnd() > 0.5, scale: 0.88 });
+    p.position.set(r[0][0], 0, r[0][1]); scene.add(p);
+    walkers.push({ g: p, a: r[0], b: r[1], f: 0, speed: 1.4 + rnd() * 0.5, t: rnd() * 6, y: 0 });
+  });
+}
+const LOOP = [[-21.5, -17.5], [21.5, -17.5], [21.5, 21.5], [-21.5, 21.5]];
+const LOOP_SEG = LOOP.map((p, i) => { const q = LOOP[(i + 1) % 4]; return { p, q, len: Math.hypot(q[0] - p[0], q[1] - p[1]) }; });
+const LOOP_LEN = LOOP_SEG.reduce((s, x) => s + x.len, 0);
+function loopPos(s) {
+  s = ((s % LOOP_LEN) + LOOP_LEN) % LOOP_LEN;
+  for (const sg of LOOP_SEG) { if (s <= sg.len) { const k = s / sg.len; return [sg.p[0] + (sg.q[0] - sg.p[0]) * k, sg.p[1] + (sg.q[1] - sg.p[1]) * k, Math.atan2(sg.q[0] - sg.p[0], sg.q[1] - sg.p[1])]; } s -= sg.len; }
+  return [0, 0, 0];
+}
+
+function buildOffice() {
+  cur = office;
+  box(29, 0.3, 21, 0xf1f0e8, 0, -0.15, 0);
+  // floor zones
+  const Z = [[-6, 6, 4.8, 10.2, 0xe8dfcb], [-14, -4.6, -2.8, 4.8, 0xe6ece6], [4.6, 14, -2.8, 4.8, 0xefe8da], [-3, 3, -4, 3, 0xe5eaeb],
+    [-14, -3.2, -10.2, -4.2, 0xdde7e6], [3.2, 14, -10.2, -4.2, 0xd8e6d4], [-3, 3, -10.2, -4, 0xd8bf98]];
+  Z.forEach((d, i) => plane(d[1] - d[0], d[3] - d[2], d[4], (d[0] + d[1]) / 2, 0.012 + i * 0.002, (d[2] + d[3]) / 2));
+  // outer walls
+  const cream = 0xf6f2e6, trim = 0xd9b98a;
+  const wall = (cx, cz, w, d, h) => { box(w, h, d, cream, cx, h / 2, cz); box(w + 0.04, 0.06, d + 0.04, trim, cx, h + 0.03, cz, null); };
+  wall(0, -10.5, 29, 0.4, 1.5); wall(-14.5, 0, 0.4, 21, 1.5); wall(14.5, 0, 0.4, 21, 1.5);
+  wall(-8.55, 10.5, 11.9, 0.4, 1.0); wall(8.55, 10.5, 11.9, 0.4, 1.0);
+
+  // ----- reception -----
+  box(5.2, 0.12, 1.5, 0xe3c79a, 0, 1.06, 6.9); box(5.0, 1.0, 0.9, 0xf4efe0, 0, 0.5, 7.0);
+  for (let i = -12; i <= 12; i++) box(0.12, 1.0, 0.1, 0xd9b98a, i * 0.2, 0.5, 7.5);
+  sign('RECEPTION', 2.4, 0.55, 0, 0.62, 7.6, 0, office);
+  box(0.8, 0.46, 0.04, 0x1d2428, 0.9, 1.4, 6.7);
+  chair(0, 5.8, 0, 0x2f4f6f);
+  recepP = person({ seated: true, suit: 0x16191c, pants: 0x16191c, skin: 0xe6bd9a, hair: 0x15110f, female: true });
+  recepP.position.set(0, -0.28, 5.8); recepP.userData.tag = 'recep'; office.add(recepP);
+  chair(-8.5, 8.8, Math.PI, 0xd29a6b); chair(-7.3, 8.8, Math.PI, 0xd29a6b);
+  plant(-5.4, 9.3, 1.3); plant(5.4, 9.3, 1.3); plant(-5.6, 5.2, 1.1); plant(5.6, 5.2, 1.1);
+  box(0.5, 1.7, 0.08, 0x9c7a52, -13.9, 1.0, 8.4);
+
+  // ----- work studio -----
+  const wx = [-12, -9, -6];
+  for (const z of [-1.2, 1.2]) for (const x of wx) { desk(x, z, true); if (rnd() > 0.2) seatAt(x, z + 0.95, Math.PI, { chairCol: 0x5f8f6f }); else chair(x, z + 0.95, Math.PI, 0x5f8f6f); }
+  railing(-13.6, 0, -4.8, 0, 1.2); railing(-4.8, -2.8, -4.8, 2.6, 1.2);
+  plant(-13.3, 3.6, 1.2); plant(-5.2, 4.3, 1.0);
+  sign('WORK STUDIO', 2.6, 0.5, -8.5, 1.9, -2.6, 0, office);
+
+  // ----- design room -----
+  const dxs = [6.9, 10.3];
+  for (const z of [-0.8, 1.4]) for (const x of dxs) { desk(x, z, true); seatAt(x, z + 0.95, Math.PI, { chairCol: 0xd29a6b }); }
+  const bc = document.createElement('canvas'); bc.width = 512; bc.height = 288; const bx = bc.getContext('2d');
+  bx.fillStyle = '#fbfaf5'; bx.fillRect(0, 0, 512, 288); bx.strokeStyle = '#2b3330'; bx.lineWidth = 3;
+  bx.strokeRect(30, 26, 140, 236); bx.strokeRect(190, 26, 292, 110); bx.strokeRect(190, 156, 136, 106); bx.strokeRect(346, 156, 136, 106);
+  bx.fillStyle = '#86a9a8'; bx.fillRect(40, 36, 120, 70); bx.fillStyle = '#d9b98a'; bx.fillRect(200, 36, 130, 90); bx.fillStyle = '#4f7c5f'; bx.fillRect(356, 166, 116, 24);
+  bx.beginPath(); bx.moveTo(40, 130); bx.lineTo(160, 130); bx.moveTo(40, 150); bx.lineTo(130, 150); bx.moveTo(200, 176); bx.lineTo(316, 176); bx.stroke();
+  const bt = new THREE.CanvasTexture(bc); bt.anisotropy = 4;
+  const board = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.0), new THREE.MeshBasicMaterial({ map: bt })); board.position.set(8.6, 1.5, -2.55); office.add(board);
+  box(3.8, 2.2, 0.08, 0x2b3330, 8.6, 1.5, -2.62);
+  railing(4.8, 4.2, 4.8, -2.8, 1.2); railing(4.8, -2.8, 13.6, -2.8, 1.2);
+  plant(13.2, 4.2, 1.2); plant(5.3, 4.4, 1.0);
+  sign('DESIGN ROOM', 2.6, 0.5, 8.5, 2.4, -2.9, 0, office);
+
+  // ----- operations -----
+  for (const z of [-3.0, -0.6]) for (const x of [-2.2, 2.2]) { desk(x, z, true); seatAt(x, z + 0.95, Math.PI, { chairCol: 0x5f8f6f }); }
+  plant(-2.8, 3.0, 1.0); plant(2.8, 3.0, 1.0);
+
+  // ----- boss cabin -----
+  const bw = (cx, cz, w, d) => { box(w, 1.7, d, cream, cx, 0.85, cz); box(w + 0.04, 0.06, d + 0.04, trim, cx, 1.73, cz, null); };
+  bw(-3, -7.3, 0.3, 5.4); bw(3, -7.3, 0.3, 5.4); bw(-2, -4.6, 2.0, 0.3); bw(2, -4.6, 2.0, 0.3);
+  box(0.2, 2.5, 0.3, trim, -1.05, 1.25, -4.6); box(0.2, 2.5, 0.3, trim, 1.05, 1.25, -4.6); box(2.3, 0.5, 0.3, trim, 0, 2.4, -4.6);
+  sign('BOSS CABIN', 1.9, 0.38, 0, 2.4, -4.4, 0, office);
+  box(3.2, 0.1, 1.3, 0xb98e5f, 0, 0.82, -8.4); box(0.1, 0.8, 1.2, 0x5a4330, -1.4, 0.4, -8.4); box(0.1, 0.8, 1.2, 0x5a4330, 1.4, 0.4, -8.4);
+  box(0.9, 0.5, 0.05, 0x1d2428, 0.5, 1.15, -8.6); box(0.7, 0.03, 0.4, 0x3a4247, -0.7, 0.88, -8.3);
+  chair(0, -9.3, 0, 0x2f4f6f);
+  bossP = person({ seated: true, suit: 0x3b4a5a, pants: 0x2b3340, skin: 0xe0b08c, hair: 0x15110f, female: true });
+  bossP.position.set(0, -0.28, -9.3); bossP.userData.tag = 'boss'; office.add(bossP);
+  chair(-0.7, -6.9, Math.PI, 0xd29a6b); chair(0.7, -6.9, Math.PI, 0xd29a6b);
+  box(0.5, 1.5, 2.4, 0x9c7a52, -2.65, 0.75, -8.2);
+  for (let i = 0; i < 8; i++) box(0.3, 0.28, 0.14, [0x4f7c5f, 0x86a9a8, 0xd9b98a, 0xb5655a][i % 4], -2.38, 0.35 + (i % 4) * 0.36, -9 + Math.floor(i / 4) * 1.5 + (i % 2) * 0.3);
+  plant(2.5, -9.4, 1.2);
+
+  // ----- meeting room -----
+  const gl = { transparent: true, opacity: 0.28 };
+  box(0.1, 2.0, 5.8, 0xbfe0e6, -3.2, 1.0, -7.1, null, gl);
+  box(4.2, 2.0, 0.1, 0xbfe0e6, -11.9, 1.0, -4.2, null, gl); box(3.0, 2.0, 0.1, 0xbfe0e6, -4.7, 1.0, -4.2, null, gl);
+  box(0.12, 2.1, 0.12, 0x2b3330, -9.8, 1.05, -4.2); box(0.12, 2.1, 0.12, 0x2b3330, -7.2, 1.05, -4.2); box(2.7, 0.1, 0.12, 0x2b3330, -8.5, 2.1, -4.2);
+  sign('MEETING ROOM', 2.4, 0.46, -8.5, 2.5, -4.1, 0, office);
+  box(4.2, 0.1, 1.7, 0xe3c79a, -8.5, 0.78, -7.9); box(0.3, 0.75, 1.2, 0x2b3330, -8.5, 0.38, -7.9);
+  box(3.2, 1.6, 0.1, 0x1d2428, -8.5, 1.4, -9.85);
+  [-10, -8.5, -7].forEach((x, i) => { if (i !== 1) seatAt(x, -6.55, Math.PI, { chairCol: 0x2f4f6f }); else chair(x, -6.55, Math.PI, 0x2f4f6f); seatAt(x, -9.25, 0, { chairCol: 0x2f4f6f }); });
+  plant(-13.3, -5.0, 1.2); plant(-4.0, -9.4, 1.1);
+
+  // ----- lounge -----
+  railing(3.4, -4.2, 6.4, -4.2, 1.1); railing(10.6, -4.2, 14, -4.2, 1.1);
+  sign('THE LOUNGE', 2.2, 0.44, 8.5, 2.1, -4.15, 0, office);
+  sofa(7.5, -9.2, 0, 3.0); sofa(11.8, -9.2, 0, 2.6); sofa(4.6, -7.2, Math.PI / 2, 2.4);
+  roundTable(8.5, -7.3, 0.7); roundTable(12.4, -6.8, 0.5);
+  const lp1 = person({ seated: true, shirt: 0xb5655a, skin: pick(SKINS), hair: 0x2b1d14, pants: 0x1f2428, female: true }); lp1.position.set(7.0, -0.1, -9.0); lp1.rotation.y = 0; office.add(lp1);
+  const lp2 = person({ seated: true, shirt: 0x3b4a5a, skin: pick(SKINS), hair: 0x15110f, pants: 0x1f2428 }); lp2.position.set(8.1, -0.1, -9.0); lp2.rotation.y = 0; office.add(lp2);
+  plant(13.3, -4.9, 1.3); plant(3.9, -9.5, 1.2); plant(13.4, -9.5, 1.1);
+}
+
+/* ============================================================
+   PLAYER, CAMERA, UI
+   ============================================================ */
+const player = { g: person({ shirt: 0x6f9ed1, pants: 0x233a63, hair: 0x1b1512 }), path: [], cb: null, t: 0, moving: false, rot: Math.PI };
+player.g.userData.tag = 'you'; scene.add(player.g);
+const SPEED = 4.2;
+function playerY(z) { return z >= 12 ? 0 : z <= 10.5 ? 0.3 : 0.3 * (12 - z) / 1.5; }
+function teleport(id) { player.path = []; player.cb = null; player.moving = false; player.g.position.set(NODES[id][0], playerY(NODES[id][1]), NODES[id][1]); player.rot = Math.PI; player.g.rotation.y = Math.PI; }
+function nearestNode(p) { let b = null, bd = 1e9; for (const k in NODES) { const d = Math.hypot(NODES[k][0] - p.x, NODES[k][1] - p.z); if (d < bd) { bd = d; b = k; } } return b; }
+function walkTo(id, cb) {
+  const ids = route(nearestNode(player.g.position), id);
+  player.path = ids.map(n => new THREE.Vector3(NODES[n][0], 0, NODES[n][1]));
+  player.cb = cb || null;
+  if (!player.path.length) finishWalk();
+}
+function finishWalk() { player.moving = false; player.rot = Math.PI; const cb = player.cb; player.cb = null; if (cb) setTimeout(cb, 350); }
+
+/* ----- camera ----- */
+const cam = { t: new THREE.Vector3(0, 0, 4), d: 110, phi: 0.7, theta: 0.6 };
+const des = { t: new THREE.Vector3(0, 0, 4), d: 40, phi: 0.95, theta: 0 };
+let follow = false, panMode = false, W = 1, H = 1, panelShift = 0;
+const vs = () => Math.min(2.4, Math.max(1, 1.4 / (W / H)));
+const VIEWS = {
+  full: { t: [0, 0, 0], d: 40, phi: 0.95, theta: 0 },
+  hood: { t: [0, 0, -4], d: 105, phi: 0.8, theta: 0.35 },
+  foot: { t: [-37, 0, 2], d: 44, phi: 0.9, theta: 0.3 },
+  intro: { t: [0, 0, 10], d: 120, phi: 0.7, theta: 0.6 }
+};
+function setView(v, snap) {
+  follow = false; des.t.set(v.t[0], v.t[1] || 0, v.t[2]); des.d = v.d * vs(); des.phi = v.phi; des.theta = v.theta;
+  if (snap) { cam.t.copy(des.t); cam.d = des.d; cam.phi = des.phi; cam.theta = des.theta; }
+}
+function setRoomView(r) { setView({ t: [r.view[0], 0.6, r.view[1]], d: r.view[2], phi: 1.0, theta: 0 }); }
+function setFollow() { follow = true; des.d = 15 * vs(); des.phi = 0.95; des.theta = 0.15; }
+
+function resize() {
+  W = window.innerWidth; H = window.innerHeight;
+  renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize); resize();
+
+/* ----- input ----- */
+const pts = new Map(); let moved = 0, lastPinch = 0;
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; lastPinch = 0; });
+canvas.addEventListener('pointermove', e => {
+  if (!pts.has(e.pointerId)) return;
+  const p = pts.get(e.pointerId), dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+  if (pts.size === 1) {
+    follow = false;
+    if (panMode || (e.buttons & 2) || e.shiftKey) {
+      const k = des.d * 0.0016, rx = Math.cos(des.theta), rz = -Math.sin(des.theta), fx = -Math.sin(des.theta), fz = -Math.cos(des.theta);
+      des.t.x += (-rx * dx + fx * dy) * k; des.t.z += (-rz * dx + fz * dy) * k;
+    } else { des.theta -= dx * 0.005; des.phi = Math.min(1.35, Math.max(0.35, des.phi + dy * 0.004)); }
+  } else if (pts.size === 2) {
+    const a = [...pts.values()], d = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+    if (lastPinch) des.d = Math.min(150, Math.max(6, des.d * lastPinch / d)); lastPinch = d;
+  }
+});
+function endPtr(e) {
+  if (!pts.has(e.pointerId)) return; pts.delete(e.pointerId); lastPinch = 0;
+  if (e.type === 'pointerup' && moved < 6 && pts.size === 0) tap(e.clientX, e.clientY);
+}
+canvas.addEventListener('pointerup', endPtr); canvas.addEventListener('pointercancel', endPtr);
+canvas.addEventListener('wheel', e => { e.preventDefault(); des.d = Math.min(150, Math.max(6, des.d * (1 + e.deltaY * 0.0012))); }, { passive: false });
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function tap(x, y) {
+  ndc.set(x / W * 2 - 1, -(y / H) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObjects([recepP, bossP], true)[0]; if (!hit) return;
+  let o = hit.object; while (o && !o.userData.tag) o = o.parent;
+  if (o && o.userData.tag === 'recep') openDialog(); else if (o && o.userData.tag === 'boss') visit('boss');
+}
+
+/* ----- UI plumbing ----- */
+const $ = id => document.getElementById(id);
+const body = document.body, guide = $('guide'), skipBtn = $('skip'), dlg = $('dialog');
+let flow = 0, touring = false, skipAction = null, dialogOpen = false, curRoom = null;
+const ROOM = Object.fromEntries(ROOMS.map(r => [r.key, r]));
+
+const list = $('rooms');
+ROOMS.forEach((r, i) => { const li = document.createElement('li'); li.innerHTML = `<button data-room="${r.key}"><i>0${i + 1}</i>${r.label}</button>`; list.appendChild(li); });
+list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { stopTour(); visit(b.dataset.room); } });
+
+function showGuide(k, t, s) { $('gk').textContent = k; $('gt').textContent = t; $('gs').textContent = s; guide.classList.add('on'); }
+function hideGuide() { guide.classList.remove('on'); skipBtn.classList.remove('on'); skipAction = null; }
+function showSkip(txt, fn) { skipBtn.textContent = txt; skipBtn.classList.add('on'); skipAction = fn; }
+skipBtn.addEventListener('click', () => { if (skipAction) skipAction(); });
+
+function setRoomHighlight(k) { curRoom = k; list.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.room === k)); }
+
+function openDialog() {
+  flow++; hideGuide(); closePanel(true); body.classList.remove('hideui');
+  if (player.g.position.z > 10) teleport('front');
+  setView({ t: [0, 1, 7.2], d: 12, phi: 0.95, theta: 0 });
+  dialogOpen = true; dlg.classList.add('on'); body.classList.add('dlg');
+}
+function closeDialog() { dialogOpen = false; dlg.classList.remove('on'); body.classList.remove('dlg'); }
+dlg.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const k = b.dataset.go; closeDialog();
+  if (k === 'ai') openChat(); else if (k === 'explore') { setRoomHighlight(null); setView(VIEWS.full); } else visit(k);
+});
+
+function openPanel(k) {
+  const c = CONTENT[k]; $('pk').textContent = c.kicker; $('pt').textContent = c.title; $('pb').innerHTML = c.body();
+  $('panel').scrollTop = 0; body.classList.add('panel');
+}
+function closePanel(silent) { body.classList.remove('panel'); if (!silent && !touring) setView(VIEWS.full); }
+$('pClose').addEventListener('click', () => { closePanel(false); setRoomHighlight(null); });
+
+/* ----- the guided visit: walk, then open the room ----- */
+function visit(key, token, done) {
+  const r = ROOM[key]; if (!r) return;
+  const f = token || ++flow;
+  closeDialog(); closePanel(true); body.classList.remove('hideui'); setRoomHighlight(key);
+  showGuide('Your visit', r.label, r.greet);
+  const arrive = () => { if (f !== flow) return; hideGuide(); setRoomView(r); openPanel(key); if (done) done(); };
+  showSkip('Skip visit ↗', () => { if (f !== flow) return; flow++; teleport(r.node); hideGuide(); setRoomView(r); openPanel(key); if (done) done(); });
+  setFollow(); walkTo(r.node, arrive);
+}
+
+/* ----- intro ----- */
+function intro() { gateIntro(); }
+
+/* ----- tour ----- */
+const tourBtn = $('tour');
+function stopTour() { if (!touring) return; touring = false; flow++; tourBtn.textContent = 'Take a tour'; }
+tourBtn.addEventListener('click', () => {
+  if (touring) { stopTour(); hideGuide(); closePanel(false); return; }
+  closeDialog(); touring = true; tourBtn.textContent = 'Stop tour';
+  const f = ++flow, order = ['reception', 'work', 'design', 'meeting', 'ops', 'lounge', 'boss']; let i = 0;
+  const next = () => {
+    if (f !== flow || !touring) return;
+    if (i >= order.length) { touring = false; tourBtn.textContent = 'Take a tour'; closePanel(true); setRoomHighlight(null); setView(VIEWS.full); return; }
+    const k = order[i++]; visit(k, f, () => setTimeout(() => { if (f !== flow || !touring) return; closePanel(true); next(); }, 5200));
+  };
+  teleport('front'); next();
+});
+
+/* ----- toolbar ----- */
+const vb = (id, fn) => $(id).addEventListener('click', () => { stopTour(); hideGuide(); fn(); });
+vb('bFull', () => { closePanel(true); setRoomHighlight(null); setView(VIEWS.full); });
+vb('bHood', () => { closePanel(true); setRoomHighlight(null); setView(VIEWS.hood); });
+vb('bFoot', () => { closePanel(true); setRoomHighlight(null); setView(VIEWS.foot); });
+$('bMove').addEventListener('click', e => { panMode = !panMode; e.currentTarget.classList.toggle('on', panMode); });
+$('zIn').addEventListener('click', () => { des.d = Math.max(6, des.d * 0.78); });
+$('zOut').addEventListener('click', () => { des.d = Math.min(150, des.d * 1.28); });
+
+/* ============================================================
+   SMART FEATURES: AI assistant, instant quote, night mode
+   ============================================================ */
+const FIRST = CONFIG.name.split(' ')[0];
+const P = CONFIG.pricing, AI = CONFIG.ai || {};
+const HI = /\b(kya|kaise|kaisa|kitna|kitne|kab|hai|hain|hoon|chahiye|batao|bataiye|mujhe|mera|meri|aap|tum|karo|karna|karti|nahi|haan|namaste|dikhao|dikha|paisa|kaam|naukri)\b/i;
+const waLink = t => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(t)}`;
+function goRoom(k) { stopTour(); closeDialog(); closeQuote(); if (W <= 760) closeChat(); visit(k); }
+
+/* ----- knowledge base for the assistant (English + Hinglish) ----- */
+const names = CONFIG.projects.map(p => p.name).join(', ');
+const contactActs = [
+  CONFIG.whatsapp && { l: 'WhatsApp', url: waLink(`Hi ${FIRST}, I found your portfolio office and wanted to talk.`) },
+  CONFIG.linkedin && { l: 'LinkedIn', url: CONFIG.linkedin },
+  CONFIG.email && { l: 'Email', url: `mailto:${CONFIG.email}` }
+].filter(Boolean);
+const KB = [
+  { k: [/\b(hi|hello|hey|hii+|namaste|hola)\b/],
+    en: `Hi! I'm ${FIRST}'s assistant. Ask me about her work, skills, pricing, or how to hire her.`,
+    hi: `Namaste! Main ${FIRST} ka assistant hoon. Unke kaam, skills, price ya hire karne ke baare me kuch bhi pucho.`, a: [] },
+  { k: [/\b(skills?|tools?|tech|stack|figma|html|css|javascript|js|ux|ui)\b/],
+    en: `${FIRST} works with HTML, CSS, JavaScript and Figma, with a focus on UI/UX design. She has also worked on AI, app and game projects.`,
+    hi: `${FIRST} HTML, CSS, JavaScript aur Figma me kaam karti hain, UI/UX design par focus ke saath. Unhone AI, app aur game projects par bhi kaam kiya hai.`,
+    a: [{ l: 'Open Skills room', room: 'ops' }] },
+  { k: [/\b(projects?|portfolio|samples?|demo|demos|examples?)\b/],
+    en: `She has completed 4-5 web projects. Samples: ${names}. Tap a button to open a site.`,
+    hi: `${FIRST} ne 4-5 web projects complete kiye hain. Samples: ${names}. Site kholne ke liye button dabao.`,
+    a: [{ l: 'Open Work Studio', room: 'work' }].concat(CONFIG.projects.filter(p => p.url).map(p => ({ l: p.name, url: p.url }))) },
+  { k: [/\b(prices?|pricing|cost|costs|rates?|charges?|budget|quote|estimate|fees?|paisa|paise|kitna)\b/],
+    en: `The price depends on the type of site, number of pages and features. Use the instant quote tool for an estimate in seconds, then ${FIRST} can confirm the final price.`,
+    hi: `Price site ke type, pages aur features par depend karta hai. Instant quote tool se seconds me estimate mil jayega, final price ${FIRST} confirm karengi.`,
+    a: [{ l: 'Get instant quote', quote: 1 }] },
+  { k: [/\b(how long|deadline|delivery|deliver|days|timeline|turnaround|kitne din|din|kab)\b/],
+    en: `The timeline depends on pages and features. The quote tool shows an estimated delivery time for your exact needs.`,
+    hi: `Time pages aur features par depend karta hai. Quote tool aapki zarurat ke hisaab se estimated delivery time dikha dega.`,
+    a: [{ l: 'Get instant quote', quote: 1 }] },
+  { k: [/\b(hire|hiring|job|jobs|part.?time|full.?time|remote|recruiter|vacancy|opening|naukri|available|availability)\b/],
+    en: `${FIRST} is open to remote part-time roles and freelance projects. The fastest way to reach her is LinkedIn or WhatsApp.`,
+    hi: `${FIRST} remote part-time roles aur freelance projects ke liye available hain. Sabse tez LinkedIn ya WhatsApp par message karo.`,
+    a: [{ l: 'Meet Shivani', room: 'boss' }].concat(contactActs) },
+  { k: [/\b(contact|whatsapp|email|mail|call|reach|number|linkedin|connect|baat)\b/],
+    en: `You can reach ${FIRST} here:`, hi: `${FIRST} se yahan contact karo:`, a: contactActs },
+  { k: [/\b(process|steps?|workflow|kaise)\b/, /work together/, /\bhow (do|does|will)\b/],
+    en: `1. We talk about your goals.\n2. She designs the pages in Figma.\n3. She builds the site in HTML, CSS and JavaScript.\n4. We test on phone and desktop, then launch.`,
+    hi: `1. Pehle aapke goals par baat hoti hai.\n2. Figma me pages design hote hain.\n3. HTML, CSS, JavaScript me site banti hai.\n4. Phone aur desktop par test karke launch.`,
+    a: [{ l: 'Visit Meeting Room', room: 'meeting' }] },
+  { k: [/\b(about|who|experience|since|years?|background|kaun|anubhav|intro|yourself)\b/],
+    en: `${FIRST} has been designing and building websites since 2024, with 4-5 projects completed. She also has experience in AI, app and game work.`,
+    hi: `${FIRST} 2024 se websites design aur build kar rahi hain, 4-5 projects complete ho chuke hain. AI, app aur game ka experience bhi hai.`,
+    a: [{ l: 'Visit The Lounge', room: 'lounge' }] },
+  { k: [/\b(ai|chatbot|game|games|app|apps|artificial)\b/],
+    en: `${FIRST} has worked on AI, app and game projects, which is why this office has interactive and AI features. You can ask about adding something similar to your own site.`,
+    hi: `${FIRST} ne AI, app aur game projects par kaam kiya hai, isiliye is office me interactive aur AI features hain. Apni site par aisa kuch chahiye to pucho.`,
+    a: [{ l: 'Get instant quote', quote: 1 }] },
+  { k: [/\b(services?|offer|offers|build|make|create|redesign|banati)\b/],
+    en: `Custom websites such as business, restaurant, cafe and academy sites, designed in Figma and built in HTML, CSS and JavaScript.`,
+    hi: `Custom websites, jaise business, restaurant, cafe aur academy sites, Figma me design aur HTML, CSS, JavaScript me build.`,
+    a: [{ l: 'See projects', room: 'work' }, { l: 'Get instant quote', quote: 1 }] },
+  { k: [/\b(tour|office|guide|ghuma)\b/],
+    en: `Sure! Tap below and I'll walk you through every room.`, hi: `Zaroor! Neeche button dabao, main har room dikha dungi.`,
+    a: [{ l: 'Start the tour', tour: 1 }] },
+  { k: [/\b(thanks?|thank you|shukriya|dhanyavad)\b/],
+    en: `You're welcome! Anything else you'd like to know?`, hi: `Koi baat nahi! Aur kuch puchna hai?`, a: [] }
+];
+function localAnswer(q) {
+  const t = q.toLowerCase(), hi = HI.test(q);
+  let best = null, bs = 0;
+  KB.forEach(e => { const s = e.k.reduce((n, r) => n + (r.test(t) ? 1 : 0), 0); if (s > bs) { bs = s; best = e; } });
+  if (!best) return {
+    matched: false,
+    text: hi ? `Is baare me mujhe pakka nahi pata. Neeche ke buttons try karo ya seedha ${FIRST} ko message karo.`
+             : `I'm not sure about that one. Try the buttons below, or message ${FIRST} directly.`,
+    actions: [{ l: 'Get instant quote', quote: 1 }].concat(contactActs.slice(0, 1))
+  };
+  return { matched: true, text: hi ? best.hi : best.en, actions: best.a };
+}
+
+/* ----- chat UI ----- */
+const msgs = $('cMsgs'), cIn = $('cIn'), hist = [];
+let speakOn = false;
+function openChat() {
+  closeDialog(); if (W <= 760) closePanel(true);
+  body.classList.add('chat');
+  if (!msgs.children.length) {
+    addMsg(`Hi! I'm ${FIRST}'s AI assistant. Ask me about projects, pricing or hiring. English ya Hinglish, dono chalega.`, 'b');
+    const chips = $('cChips');
+    ['Show projects', 'Price kitna hoga?', 'Hire Shivani', 'Skills', 'Take a tour'].forEach(t => {
+      const b = document.createElement('button'); b.textContent = t; b.addEventListener('click', () => { addMsg(t, 'u'); ask(t); }); chips.appendChild(b);
+    });
+  }
+  if (W > 760) cIn.focus();
+}
+function closeChat() { body.classList.remove('chat'); if (window.speechSynthesis) speechSynthesis.cancel(); }
+function addMsg(text, who, actions) {
+  const d = document.createElement('div'); d.className = 'm ' + who; d.textContent = text; msgs.appendChild(d);
+  if (actions && actions.length) {
+    const a = document.createElement('div'); a.className = 'acts';
+    actions.forEach(x => { const b = document.createElement('button'); b.textContent = x.l; b.addEventListener('click', () => doAct(x)); a.appendChild(b); });
+    msgs.appendChild(a);
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function showTyping() { const d = document.createElement('div'); d.className = 'm b typing'; d.id = 'cTyp'; d.innerHTML = '<i></i><i></i><i></i>'; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; }
+function hideTyping() { const d = $('cTyp'); if (d) d.remove(); }
+function doAct(x) {
+  if (x.room) goRoom(x.room);
+  else if (x.quote) { if (W <= 760) closeChat(); openQuote(); }
+  else if (x.tour) { if (W <= 760) closeChat(); if (!touring) tourBtn.click(); }
+  else if (x.url) window.open(x.url, '_blank', 'noopener');
+}
+function speak(t) {
+  if (!speakOn || !window.speechSynthesis) return;
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-IN'; speechSynthesis.speak(u);
+}
+async function ask(text) {
+  hist.push({ role: 'user', content: text }); showTyping();
+  let out = null; const local = localAnswer(text);
+  if (AI.endpoint) {
+    try {
+      const r = await fetch(AI.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: hist.slice(-10) }) });
+      if (r.ok) { const d = await r.json(); if (d && d.reply) out = { text: String(d.reply), actions: local.matched ? local.actions : [] }; }
+    } catch (_) { /* fall back to the built-in answers */ }
+  }
+  if (!out) { await new Promise(r => setTimeout(r, 450 + Math.random() * 450)); out = local; }
+  hideTyping(); hist.push({ role: 'assistant', content: out.text }); addMsg(out.text, 'b', out.actions); speak(out.text);
+}
+function sendChat() { const t = cIn.value.trim(); if (!t) return; cIn.value = ''; addMsg(t, 'u'); ask(t); }
+$('cSend').addEventListener('click', sendChat);
+cIn.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+$('cClose').addEventListener('click', closeChat);
+$('cVoice').addEventListener('click', e => { speakOn = !speakOn; e.currentTarget.classList.toggle('on', speakOn); if (!speakOn && window.speechSynthesis) speechSynthesis.cancel(); });
+/* ----- instant quote ----- */
+const Q = { type: P.types[1] ? P.types[1].id : P.types[0].id, extra: 0, add: new Set(), rush: false };
+const inr = n => P.currency + n.toLocaleString('en-IN');
+let quoteBuilt = false;
+function buildQuote() {
+  $('qBody').innerHTML = `
+    <h4>What do you need?</h4>
+    <div class="qrow" id="qTypes">${P.types.map(t => `<button class="qchip" data-t="${t.id}">${t.label}</button>`).join('')}</div>
+    <h4>Extra pages</h4>
+    <div class="qstep"><button id="qMinus" aria-label="Fewer pages">−</button><b id="qExtra">0</b><button id="qPlus" aria-label="More pages">+</button></div>
+    <h4>Add-ons</h4>
+    <div>${P.addons.map(a => `<label class="qadd"><input type="checkbox" data-a="${a.id}">${a.label}<span>+${inr(a.cost)}</span></label>`).join('')}</div>
+    <h4>Timeline</h4>
+    <div class="qrow"><button class="qchip" data-r="0">Normal</button><button class="qchip" data-r="1">Rush (+${P.rushPct}%)</button></div>
+    <div class="qres"><b id="qTotal"></b><span id="qDays"></span></div>
+    <input class="nm" id="qName" type="text" placeholder="Your name (optional)" autocomplete="name">
+    <div class="btns">${CONFIG.whatsapp ? '<a class="btn" id="qWA" target="_blank" rel="noopener">Send this on WhatsApp</a>' : ''}${CONFIG.email ? '<a class="btn alt" id="qMail">Send by email</a>' : ''}</div>
+    <p class="fine">This is an estimate. The final price depends on your full brief.</p>`;
+  const qb = $('qBody');
+  qb.addEventListener('click', e => {
+    const t = e.target.closest('[data-t]'), r = e.target.closest('[data-r]');
+    if (t) Q.type = t.dataset.t;
+    else if (r) Q.rush = r.dataset.r === '1';
+    else if (e.target.closest('#qPlus')) Q.extra = Math.min(10, Q.extra + 1);
+    else if (e.target.closest('#qMinus')) Q.extra = Math.max(0, Q.extra - 1);
+    else return;
+    updateQuote();
+  });
+  qb.addEventListener('change', e => { const a = e.target.dataset.a; if (!a) return; e.target.checked ? Q.add.add(a) : Q.add.delete(a); updateQuote(); });
+  $('qName').addEventListener('input', updateQuote);
+  quoteBuilt = true;
+}
+function calcQuote() {
+  const t = P.types.find(x => x.id === Q.type);
+  let cost = t.base + Q.extra * P.extraPage.cost, days = t.days + Q.extra * P.extraPage.days;
+  P.addons.forEach(a => { if (Q.add.has(a.id)) { cost += a.cost; days += a.days; } });
+  if (Q.rush) { cost = Math.round(cost * (1 + P.rushPct / 100)); days = Math.max(2, Math.ceil(days * 0.65)); }
+  const r = n => Math.round(n / 100) * 100;
+  return { t, lo: r(cost * (1 - P.spread)), hi: r(cost * (1 + P.spread)), days };
+}
+function updateQuote() {
+  const c = calcQuote();
+  document.querySelectorAll('#qTypes .qchip').forEach(b => b.classList.toggle('on', b.dataset.t === Q.type));
+  document.querySelectorAll('[data-r]').forEach(b => b.classList.toggle('on', (b.dataset.r === '1') === Q.rush));
+  $('qExtra').textContent = Q.extra;
+  $('qTotal').textContent = `${inr(c.lo)} – ${inr(c.hi)}`;
+  $('qDays').textContent = `Estimated delivery: about ${c.days} working days`;
+  const extras = P.addons.filter(a => Q.add.has(a.id)).map(a => a.label), name = $('qName').value.trim();
+  const msg = `Hi ${FIRST}! ${name ? "I'm " + name + '. ' : ''}I'd like a ${c.t.label.toLowerCase()}` +
+    (Q.extra ? ` with ${Q.extra} extra page${Q.extra > 1 ? 's' : ''}` : '') +
+    (extras.length ? `, plus: ${extras.join(', ')}` : '') +
+    `. Timeline: ${Q.rush ? 'rush' : 'normal'}. Your estimate showed ${inr(c.lo)} – ${inr(c.hi)}. Can we talk?`;
+  const wa = $('qWA'), ml = $('qMail');
+  if (wa) wa.href = waLink(msg);
+  if (ml) ml.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent('Website enquiry')}&body=${encodeURIComponent(msg)}`;
+}
+function openQuote() { closeDialog(); if (!quoteBuilt) buildQuote(); updateQuote(); body.classList.add('quote'); }
+function closeQuote() { body.classList.remove('quote'); }
+$('qClose').addEventListener('click', closeQuote);
+$('qback').addEventListener('click', closeQuote);
+$('pb').addEventListener('click', e => { if (e.target.closest('[data-act="quote"]')) openQuote(); });
+
+/* ----- night mode (auto from the visitor's local time) ----- */
+const hemi = scene.children.find(o => o.type === 'HemisphereLight');
+function setNight(on) {
+  const bg = on ? 0x14202b : 0xdbe8e6;
+  scene.background.setHex(bg); scene.fog.color.setHex(bg);
+  if (hemi) hemi.intensity = on ? 0.32 : 0.68;
+  sun.intensity = on ? 0.14 : 0.42; sun.color.setHex(on ? 0xaec4ff : 0xffffff);
+  document.documentElement.style.background = on ? '#14202b' : '#dbe8e6';
+  body.classList.toggle('night', on); $('bNight').textContent = on ? 'Day' : 'Night'; $('bNight').dataset.on = on ? '1' : '';
+}
+$('bNight').addEventListener('click', () => setNight(!$('bNight').dataset.on));
+{ const h = new Date().getHours(); setNight(h >= 19 || h < 6); }
+
+/* ----- entry points ----- */
+$('bAI').addEventListener('click', () => body.classList.contains('chat') ? closeChat() : openChat());
+{ const li = document.createElement('li'); li.innerHTML = '<button data-ai="1"><i>✦</i>Ask AI</button>'; list.appendChild(li);
+  li.firstChild.addEventListener('click', e => { e.stopPropagation(); openChat(); }); }
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (body.classList.contains('quote')) closeQuote(); else if (body.classList.contains('chat')) closeChat();
+});
+
+/* ----- gate guard: stops every visitor first ----- */
+let visitorType = null;
+const BOOTH = [-4.4, 13.6], GATE_STOP = [-1.3, 16.6];
+const GATE_GREET = { client: 'Looking for a website? Start at the Work Studio.', hire: 'Hiring? Check Operations and the Boss Cabin.', look: 'Enjoy your visit!' };
+const RECEP_TXT = {
+  client: 'Welcome! Since you need a website, try the Work Studio first, then the instant quote in the Meeting Room.',
+  hire: 'Welcome! Operations has her skills, and the Boss Cabin has her contact details.'
+};
+let guardGo = null, guardT = 0, gLast = performance.now();
+function sendGuard(to, face, done) { guardGo = { x: to[0], z: to[1], face, done }; }
+function guardTick(now) {
+  const dt = Math.min(0.05, (now - gLast) / 1000); gLast = now;
+  if (guardP && guardGo) {
+    const p = guardP.position, dx = guardGo.x - p.x, dz = guardGo.z - p.z, d = Math.hypot(dx, dz), st = 2.6 * dt;
+    if (d <= st) {
+      p.x = guardGo.x; p.z = guardGo.z; const g = guardGo; guardGo = null;
+      guardP.userData.legs.concat(guardP.userData.arms).forEach(l => l.rotation.x = 0);
+      if (g.face != null) guardP.rotation.y = g.face;
+      if (g.done) g.done();
+    } else {
+      p.x += dx / d * st; p.z += dz / d * st; guardP.rotation.y = Math.atan2(dx, dz);
+      guardT += dt * 9; walkAnim(guardP, guardT, 0.7);
+    }
+  }
+  requestAnimationFrame(guardTick);
+}
+requestAnimationFrame(guardTick);
+
+const gdlg = $('gdlg');
+function gateIntro() {
+  const f = ++flow; teleport('street'); setView(VIEWS.intro, true);
+  showGuide('Welcome', 'Studio gate', 'The guard is checking visitors…');
+  showSkip('Skip to reception ↗', () => { if (f !== flow) return; flow++; sendGuard(BOOTH, 0.6); openDialog(); });
+  setTimeout(() => {
+    if (f !== flow) return;
+    setFollow();
+    walkTo('gate', () => {
+      if (f !== flow) return;
+      setView({ t: [-0.6, 1, 17], d: 12, phi: 0.95, theta: 0.2 });
+      sendGuard(GATE_STOP, Math.atan2(0 - GATE_STOP[0], 17.8 - GATE_STOP[1]), () => {
+        if (f !== flow) return; hideGuide(); gdlg.classList.add('on');
+      });
+    });
+  }, 1500);
+}
+gdlg.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  visitorType = b.dataset.w; gdlg.classList.remove('on');
+  const f = ++flow;
+  showGuide('Security', 'Gate open. Welcome in!', GATE_GREET[visitorType]);
+  sendGuard(BOOTH, 0.6);
+  setFollow();
+  walkTo('front', () => {
+    if (f !== flow) return;
+    if (RECEP_TXT[visitorType]) document.querySelector('#dialog p').textContent = RECEP_TXT[visitorType];
+    openDialog();
+  });
+});
+
+/* ----- receptionist escorts visitors to the room they ask for ----- */
+const escortP = person({ suit: 0x16191c, pants: 0x16191c, skin: 0xe6bd9a, hair: 0x15110f, female: true });
+escortP.visible = false; scene.add(escortP);
+let escortOn = false, esc = null, escT = 0, escTok = 0;
+const ptsOf = ids => ids.map(n => [NODES[n][0], NODES[n][1]]);
+function aheadPath(start, pts, lead) {
+  let cur = start, rem = lead;
+  for (let i = 0; i < pts.length; i++) {
+    const d = Math.hypot(pts[i][0] - cur[0], pts[i][1] - cur[1]);
+    if (d > rem) { const k = rem / d; return { from: [cur[0] + (pts[i][0] - cur[0]) * k, cur[1] + (pts[i][1] - cur[1]) * k], rest: pts.slice(i) }; }
+    rem -= d; cur = pts[i];
+  }
+  return { from: cur, rest: [] };
+}
+function escortWalk(path, face, done) { esc = { path: path.slice(), face, done }; }
+function startEscort(node) {
+  const tok = ++escTok, pp = player.g.position;
+  const ids = route(nearestNode(pp), node), pts = ptsOf(ids), end = pts[pts.length - 1];
+  const a = aheadPath([pp.x, pp.z], pts, 1.5);
+  recepP.visible = false; escortOn = true; escortP.visible = true;
+  escortP.position.set(a.from[0], playerY(a.from[1]), a.from[1]);
+  escortP.rotation.y = Math.PI;
+  const stand = [end[0] + 1.4, end[1] + 0.2];
+  escortWalk(a.rest.concat([stand]), Math.PI, () => {
+    setTimeout(() => {
+      if (tok !== escTok) return;
+      const back = ptsOf(route(nearestNode({ x: stand[0], z: stand[1] }), 'front'));
+      escortWalk(back, null, () => { if (tok !== escTok) return; escortP.visible = false; recepP.visible = true; escortOn = false; });
+    }, 4200);
+  });
+}
+let eLast = performance.now();
+function escortTick(now) {
+  const dt = Math.min(0.05, (now - eLast) / 1000); eLast = now;
+  if (esc && esc.path.length) {
+    const p = escortP.position, tg = esc.path[0], dx = tg[0] - p.x, dz = tg[1] - p.z, d = Math.hypot(dx, dz), st = SPEED * dt;
+    if (d <= st) { p.x = tg[0]; p.z = tg[1]; esc.path.shift(); }
+    else { p.x += dx / d * st; p.z += dz / d * st; escortP.rotation.y = Math.atan2(dx, dz); escT += dt * 9; walkAnim(escortP, escT, 0.7); }
+    p.y = playerY(p.z);
+    if (!esc.path.length) {
+      const e = esc; esc = null;
+      escortP.userData.legs.concat(escortP.userData.arms).forEach(l => l.rotation.x = 0);
+      if (e.face != null) escortP.rotation.y = e.face;
+      if (e.done) e.done();
+    }
+  }
+  requestAnimationFrame(escortTick);
+}
+requestAnimationFrame(escortTick);
+const _visit = visit;
+visit = function (key, token, done) {
+  const r = ROOM[key];
+  if (r && !touring && !token) startEscort(r.node);
+  return _visit(key, token, done);
+};
+
+/* ============================================================
+   LOOP
+   ============================================================ */
+const tmpV = new THREE.Vector3();
+function place(el, obj, dy, on) {
+  if (!on) { el.style.display = 'none'; return; }
+  obj.getWorldPosition(tmpV); tmpV.y += dy; tmpV.project(camera);
+  if (tmpV.z > 1 || tmpV.z < -1) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.style.transform = `translate(${((tmpV.x * 0.5 + 0.5) * W).toFixed(1)}px,${((-tmpV.y * 0.5 + 0.5) * H).toFixed(1)}px) translate(-50%,-100%)`;
+}
+const angDiff = (a, b) => { let d = b - a; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; };
+
+function update(dt, now) {
+  // player
+  const pg = player.g;
+  if (player.path.length) {
+    const tg = player.path[0], dx = tg.x - pg.position.x, dz = tg.z - pg.position.z, d = Math.hypot(dx, dz), st = SPEED * dt;
+    player.moving = true;
+    if (d <= st) { pg.position.x = tg.x; pg.position.z = tg.z; player.path.shift(); if (!player.path.length) finishWalk(); }
+    else { pg.position.x += dx / d * st; pg.position.z += dz / d * st; player.rot = Math.atan2(dx, dz); }
+  }
+  pg.position.y = playerY(pg.position.z);
+  pg.rotation.y += angDiff(pg.rotation.y, player.rot) * Math.min(1, dt * 10);
+  if (player.moving) { player.t += dt * 9; walkAnim(pg, player.t, 0.7); }
+  else { const u = pg.userData; u.legs.concat(u.arms).forEach(l => l.rotation.x *= 0.8); }
+
+  // walkers (pedestrians and footballers)
+  walkers.forEach(w => {
+    const tg = w.f ? w.a : w.b, p = w.g.position, dx = tg[0] - p.x, dz = tg[1] - p.z, d = Math.hypot(dx, dz), st = w.speed * dt;
+    if (d <= st) { w.f = 1 - w.f; if (w.y === 0.05) { w.a = [-44 + rnd() * 14, -11 + rnd() * 26]; w.b = [-44 + rnd() * 14, -11 + rnd() * 26]; } }
+    else { p.x += dx / d * st; p.z += dz / d * st; w.g.rotation.y = Math.atan2(dx, dz); }
+    w.t += dt * w.speed * 4; walkAnim(w.g, w.t, 0.6);
+  });
+  // cars
+  cars.forEach(c => { c.s += c.speed * dt; const p = loopPos(c.s); c.g.position.set(p[0], 0.03, p[1]); c.g.rotation.y = p[2]; });
+
+  // camera
+  if (follow) des.t.set(pg.position.x, 0.8, pg.position.z);
+  const k = 1 - Math.exp(-dt * 2.6);
+  cam.t.lerp(des.t, k); cam.d += (des.d - cam.d) * k; cam.phi += (des.phi - cam.phi) * k; cam.theta += (des.theta - cam.theta) * k;
+  const cp = Math.cos(cam.phi);
+  camera.position.set(cam.t.x + cam.d * Math.sin(cam.theta) * cp, cam.t.y + cam.d * Math.sin(cam.phi), cam.t.z + cam.d * Math.cos(cam.theta) * cp);
+  camera.lookAt(cam.t);
+  // slide the scene left while the side panel is open (desktop only)
+  const want = (body.classList.contains('panel') && W > 900) ? W * 0.11 : 0;
+  panelShift += (want - panelShift) * (1 - Math.exp(-dt * 4));
+  if (Math.abs(panelShift) > 0.3) camera.setViewOffset(W, H, panelShift, 0, W, H); else if (camera.view && camera.view.enabled) camera.clearViewOffset();
+  camera.updateMatrixWorld();
+
+  // labels
+  place($('lYou'), pg, 2.15, true);
+  place($('lRec'), escortOn ? escortP : recepP, 2.2, cam.d < 55);
+  place($('lBoss'), bossP, 2.2, cam.d < 30 && curRoom === 'boss');
+  place($('lGuard'), guardP, 2.2, cam.d < 40);
+  // dialog follows the receptionist on desktop
+  if (dialogOpen && W > 760) {
+    recepP.getWorldPosition(tmpV); tmpV.y += 1.5; tmpV.project(camera);
+    const x = Math.min(W - dlg.offsetWidth - 14, Math.max(14, (tmpV.x * 0.5 + 0.5) * W + 40)), y = Math.min(H - dlg.offsetHeight - 90, Math.max(70, (-tmpV.y * 0.5 + 0.5) * H - dlg.offsetHeight * 0.55));
+    dlg.style.left = x + 'px'; dlg.style.top = y + 'px';
+  }
+}
+
+let last = performance.now(), booted = false;
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  update(dt, now); renderer.render(scene, camera);
+  if (!booted) { booted = true; $('loader').classList.add('off'); intro(); }
+  requestAnimationFrame(frame);
+}
+
+
+/* contact dock wiring */
+(function(){
+  const li=$('dkLi'), wa=$('dkWa'), ml=$('dkMail');
+  if (CONFIG.linkedin) li.href=CONFIG.linkedin; else li.remove();
+  if (CONFIG.whatsapp) wa.href=waLink('Hi '+FIRST+', I found your portfolio office and wanted to talk.'); else wa.remove();
+  if (CONFIG.email) ml.href='mailto:'+CONFIG.email+'?subject='+encodeURIComponent('Website enquiry'); else ml.remove();
+})();
+
+buildOutside(); buildOffice();
+if (matchMedia('(hover:none)').matches) $('hint').textContent = 'Drag to rotate · Pinch to zoom';
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
